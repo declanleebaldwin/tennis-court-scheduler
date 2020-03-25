@@ -1,32 +1,46 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <div id="app">
+        <section class="hero is-success">
+            <div class="hero-head">
+                <header class="navbar">
+                    <div class="container">
+                        <div class="navbar-brand">
+                            <span class="navbar-burger burger" data-target="navbarMenuHeroC">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </span>
+                        </div>
+                        <div id="navbarMenuHeroC" class="navbar-menu">
+                            <div class="navbar-end">
+                                <a class="navbar-item is-active">
+                                    Make a Booking
+                                </a>
+                                <a class="navbar-item">
+                                    My Bookings
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+            </div>
+            <div class="hero-body">
+                <div class="container">
+                    <h1 class="title">
+                        Tennis Court Scheduler
+                    </h1>
+                    <h2 class="subtitle">
+                        Queens Club Gardens
+                    </h2>
+                </div>
+            </div>
+        </section>
+        <router-view />
     </div>
-    <router-view/>
-  </div>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+<style lang="css">
+.hero {
+  margin-bottom: 50px;
 }
 </style>
