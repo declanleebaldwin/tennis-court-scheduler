@@ -6,27 +6,32 @@
 
 <script>
 import firebase from "firebase";
-
+import { mapState } from 'vuex';
 export default {
 	name: "SignIn",
 	methods: {
 		signIn() {
 			let $this = this;
 			var provider = new firebase.auth.GoogleAuthProvider();
-			if (!this.authenticated) {
-				firebase
-					.auth()
-					.signInWithPopup(provider)
-					.then(function() {
-						// $this.token = result.credential.accessToken;
-						// $this.user = result.user;
-						$this.$router.replace({ name: "Booking" });
-					})
-					.catch(function(error) {
-						console.log(error);
+			firebase
+				.auth()
+				.signInWithPopup(provider)
+				.then(function(result) {
+					// $this.token = result.credential.accessToken;
+					$this.$store.commit("setUserData", {
+						displayName: result.user.displayName,
+						email: result.user.email
 					});
-			}
+
+					$this.$router.replace({ name: "Booking" });
+				})
+				.catch(function(error) {
+					console.log(error);
+				});
 		}
 	},
+	computed: mapState([
+        'user'
+    ]),
 };
 </script>

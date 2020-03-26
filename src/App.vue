@@ -11,7 +11,7 @@
 								<span></span>
 							</span>
 						</div>
-						<div id="navbarMenuHeroC" class="navbar-menu">
+						<div v-if="user" id="navbarMenuHeroC" class="navbar-menu">
 							<div class="navbar-end">
 								<router-link id="navbar-make-a-booking" class="navbar-item" to="/booking"
 									>Make a Booking</router-link
@@ -19,6 +19,8 @@
 								<router-link id="navbar-my-bookings" class="navbar-item" to="/my-bookings"
 									>My Bookings</router-link
 								>
+								<a class="navbar-item" @click="signOut">Sign Out</a>
+								<p class="navbar-item">{{user.displayName}}</p>
 							</div>
 						</div>
 					</div>
@@ -39,8 +41,28 @@
 	</div>
 </template>
 <script>
+import firebase from "firebase";
+import { mapState } from 'vuex';
+
 export default {
-	
+	methods: {
+		signOut() {
+			let $this = this;
+			firebase
+				.auth()
+				.signOut()
+				.then(function() {
+					$this.$store.commit("setUserData", null);
+					$this.$router.replace({ name: "SignIn" });
+				})
+				.catch(function(error) {
+					console.log(error);
+				});
+		}
+	},
+	computed: mapState([
+        'user'
+    ]),
 };
 </script>
 <style lang="css">

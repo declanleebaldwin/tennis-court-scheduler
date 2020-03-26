@@ -8,10 +8,7 @@ const debug = process.env.NODE_ENV !== "production";
 export default new Vuex.Store({
 	strict: debug,
 	state: {
-		user: {
-			loggedIn: false,
-			data: null
-		}
+		user: null
 	},
 	getters: {
 		user(state) {
@@ -19,12 +16,9 @@ export default new Vuex.Store({
 		}
 	},
 	mutations: {
-		setLoggedIn(state, value) {
-			state.user.loggedIn = value;
+		setUserData(state, user) {
+			state.user = user;
 		},
-		setUserData(state, data) {
-			state.user.data = data;
-		}
 	},
 	actions: {}
 });
