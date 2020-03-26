@@ -4,6 +4,8 @@ import router from './router'
 import './../node_modules/bulma/css/bulma.css';
 import * as firebase from 'firebase';
 import "firebase/auth";
+import store from "./store"
+
 
 var firebaseConfig = {
   apiKey: "AIzaSyBqSavDHySRTydr9uGwhhExWrNploNo4lk",
@@ -19,7 +21,9 @@ firebase.initializeApp(firebaseConfig);
 
 Vue.config.productionTip = false
 
+
 new Vue({
+  store,
   router,
   render: h => h(App)
 }).$mount('#app')

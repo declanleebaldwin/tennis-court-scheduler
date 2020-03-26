@@ -13,12 +13,12 @@
 						</div>
 						<div id="navbarMenuHeroC" class="navbar-menu">
 							<div class="navbar-end">
-								<a class="navbar-item is-active">
-									Make a Booking
-								</a>
-								<a class="navbar-item">
-									My Bookings
-								</a>
+								<router-link id="navbar-make-a-booking" class="navbar-item" to="/booking"
+									>Make a Booking</router-link
+								>
+								<router-link id="navbar-my-bookings" class="navbar-item" to="/my-bookings"
+									>My Bookings</router-link
+								>
 							</div>
 						</div>
 					</div>
@@ -39,43 +39,18 @@
 	</div>
 </template>
 <script>
-import firebase from "firebase";
 export default {
-    data() {
-        return {
-            user: null,
-            authenticated: false
-        }
-    },
-    watch: {
-        user(newUser) {
-            if(newUser == null) {
-                this.authenticated = false;
-            } else {
-                this.authenticated = true;
-            }
-        }
-    },
-	mounted() {
-        let $this = this;
-		var provider = new firebase.auth.GoogleAuthProvider();
-		firebase
-			.auth()
-			.signInWithPopup(provider)
-			.then(function(result) {
-				// This gives you a Google Access Token. You can use it to access the Google API.
-				// The signed-in user info.
-                $this.user = result.user;
-				// ...
-			})
-			.catch(function(error) {
-                console.log(error);
-			});
-	}
+	
 };
 </script>
 <style lang="css">
 .hero {
 	margin-bottom: 50px;
+}
+#navbar-make-a-booking:focus,
+#navbar-my-bookings:focus,
+.router-link-exact-active {
+	background-color: #3abb67;
+	color: #fff;
 }
 </style>
