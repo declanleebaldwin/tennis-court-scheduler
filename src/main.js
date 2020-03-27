@@ -5,7 +5,7 @@ import './../node_modules/bulma/css/bulma.css';
 import * as firebase from 'firebase';
 import "firebase/auth";
 import store from "./store"
-
+import 'vue-material-design-icons/styles.css';
 
 var firebaseConfig = {
   apiKey: "AIzaSyBqSavDHySRTydr9uGwhhExWrNploNo4lk",
