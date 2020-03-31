@@ -22,11 +22,13 @@
 								<div class="control">
 									<div class="select" :class="{ 'is-danger': errors.building }">
 										<select v-model="selectedBuildingName" @change="validateBuilding">
-											<option v-for="(building, index) in buildings" :key="index">{{ toUpper(building.name) }}</option>
+											<option v-for="(building, index) in buildings" :key="index">{{
+												toUpper(building.name)
+											}}</option>
 										</select>
 									</div>
 								</div>
-                                <p v-show="errors.building" class="help is-danger">Please select a building</p>
+								<p v-show="errors.building" class="help is-danger">Please select a building</p>
 							</div>
 						</div>
 						<div class="column" v-show="selectedBuildingName">
@@ -39,13 +41,15 @@
 										</select>
 									</div>
 								</div>
-                                <p v-show="errors.flat" class="help is-danger">Please select a flat</p>
+								<p v-show="errors.flat" class="help is-danger">Please select a flat</p>
 							</div>
 						</div>
 					</div>
 				</section>
 				<footer class="modal-card-foot">
-					<button class="button is-success" @click="updateAddress">Update</button>
+					<button class="button is-success" @click="updateAddress" :class="{ 'is-loading': loading }">
+						Update
+					</button>
 					<button class="button" @click="showModal = false">Cancel</button>
 				</footer>
 			</div>
@@ -54,6 +58,7 @@
 </template>
 <script>
 import db from "@/fb";
+import firebase from "firebase";
 import { mapState } from "vuex";
 
 export default {
@@ -65,39 +70,74 @@ export default {
 			address: null,
 			selectedBuildingName: null,
 			selectedFlat: null,
-            showModal: false,
-            errors: {
-                building: false,
-                flat: false
-            }
+			showModal: false,
+			errors: {
+				building: false,
+				flat: false
+			},
+			loading: false
 		};
 	},
 	methods: {
-        toUpper(string) {
-            return string.charAt(0).toUpperCase() + string.substring(1);
-        },
-        validateBuilding() {
-            if(!this.selectedBuildingName) {
-                this.errors.building = true;
-            } else {
-                this.errors.building = false;
-            }
-        },
-        validateFlat() {
-             if(!this.selectedFlat) {
-                this.errors.flat = true;
-            } else {
-                this.errors.flat = false;
-            }
-        },
-        updateAddress() {
-            this.validateBuilding();
-            this.validateFlat();
-            if(!this.errors.building && !this.errors.flat) {
-                console.log('send data to firestore');
-            }
-        }
-    },
+		toUpper(string) {
+			return string.charAt(0).toUpperCase() + string.substring(1);
+		},
+		validateBuilding() {
+			if (!this.selectedBuildingName) {
+				this.errors.building = true;
+			} else {
+				this.errors.building = false;
+			}
+		},
+		validateFlat() {
+			if (!this.selectedFlat) {
+				this.errors.flat = true;
+			} else {
+				this.errors.flat = false;
+			}
+		},
+		updateAddress() {
+			this.validateBuilding();
+			this.validateFlat();
+			if (!this.errors.building && !this.errors.flat) {
+				this.removeOldAddress();
+				this.addNewAddress();
+			}
+		},
+		removeOldAddress() {
+            let $this = this;
+			let oldAddressRef = db.collection("addresses").doc(this.address.id);
+			oldAddressRef.update({
+				users: firebase.firestore.FieldValue.arrayRemove($this.user.uid)
+			});
+		},
+		addNewAddress() {
+            let $this = this;
+            this.loading = true;
+			var addressRef = db.collection("addresses");
+			addressRef
+				.where("building", "==", this.selectedBuildingName.toLowerCase())
+				.where("flat", "==", parseInt(this.selectedFlat))
+				.get()
+				.then(function(querySnapshot) {
+					console.log(querySnapshot);
+					querySnapshot.forEach(function(doc) {
+						let newAddressRef = db.collection("addresses").doc(doc.id);
+						newAddressRef
+							.update({
+								users: firebase.firestore.FieldValue.arrayUnion($this.user.uid)
+							})
+							.then(() => {
+                                $this.showModal = false;
+                                $this.loading = false;
+							});
+					});
+				})
+				.catch(function(error) {
+					console.log("Error getting documents: ", error);
+				});
+		}
+	},
 	computed: mapState(["user"]),
 	watch: {
 		selectedBuildingName(newBuildingName) {
