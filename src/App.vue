@@ -19,9 +19,10 @@
 								<router-link id="navbar-my-bookings" class="navbar-item" to="/my-bookings"
 									>My Bookings</router-link
 								>
-								<router-link id="navbar-my-account" class="navbar-item" to="/my-account"><Account size="30" />{{
-									user.displayName
-								}}</router-link>
+								<router-link id="navbar-my-account" class="navbar-item" to="/my-account"
+									><i class="material-icons account">account_circle</i
+									>{{ user.displayName }}</router-link
+								>
 								<a class="navbar-item" @click="signOut">Sign Out</a>
 							</div>
 						</div>
@@ -45,10 +46,8 @@
 <script>
 import firebase from "firebase";
 import { mapState } from "vuex";
-import Account from 'vue-material-design-icons/Account.vue';
 
 export default {
-	components: { Account },
 	methods: {
 		signOut() {
 			let $this = this;
@@ -77,5 +76,10 @@ export default {
 .router-link-exact-active {
 	background-color: #3abb67;
 	color: #fff;
+}
+.account {
+	margin-right: 5px;
+	position: relative;
+	top: 2px;
 }
 </style>

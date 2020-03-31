@@ -1,5 +1,6 @@
 <template>
 	<div class="container">
+		<h2 class="title">Make a Booking</h2>
 		<div class="margin-bottom-50">
 			<p class="has-text-grey margin-bottom-10">
 				Bookings are released every Monday. Residents can book one hour slot per day.
