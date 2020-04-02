@@ -105,22 +105,21 @@ export default {
 			}
 		},
 		removeOldAddress() {
-            let $this = this;
+			let $this = this;
 			let oldAddressRef = db.collection("addresses").doc(this.address.id);
 			oldAddressRef.update({
 				users: firebase.firestore.FieldValue.arrayRemove($this.user.uid)
 			});
 		},
 		addNewAddress() {
-            let $this = this;
-            this.loading = true;
+			let $this = this;
+			this.loading = true;
 			var addressRef = db.collection("addresses");
 			addressRef
 				.where("building", "==", this.selectedBuildingName.toLowerCase())
 				.where("flat", "==", parseInt(this.selectedFlat))
 				.get()
 				.then(function(querySnapshot) {
-					console.log(querySnapshot);
 					querySnapshot.forEach(function(doc) {
 						let newAddressRef = db.collection("addresses").doc(doc.id);
 						newAddressRef
@@ -128,8 +127,8 @@ export default {
 								users: firebase.firestore.FieldValue.arrayUnion($this.user.uid)
 							})
 							.then(() => {
-                                $this.showModal = false;
-                                $this.loading = false;
+								$this.showModal = false;
+								$this.loading = false;
 							});
 					});
 				})
@@ -153,18 +152,16 @@ export default {
 		let $this = this;
 		db.collection("addresses")
 			.where("users", "array-contains", $this.user.uid)
-			.get()
-			.then(function(querySnapshot) {
+			.onSnapshot(function(querySnapshot) {
 				querySnapshot.forEach(function(address) {
 					$this.address = {
 						id: address.id,
 						...address.data()
 					};
-				});
-			})
-			.catch(function(error) {
-				console.log("Error getting documents: ", error);
-			});
+				}, function(error) {
+                    console.log("Error getting documents: ", error)
+                });
+            })
 		db.collection("buildings")
 			.get()
 			.then(querySnapshot => {
