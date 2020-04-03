@@ -145,7 +145,8 @@ export default {
 				time: $this.selectedTime,
 				uid: $this.user.uid,
 				week: $this.selectedDay.getWeek(),
-				year: $this.selectedDay.getFullYear()
+				year: $this.selectedDay.getFullYear(),
+				date: $this.selectedDateTime
 			};
 			db.collection("bookings")
 				.add(timeSlot)
@@ -186,6 +187,14 @@ export default {
 		},
 		user() {
 			return this.$store.getters.user;
+		},
+		selectedDateTime() {
+			if(this.selectedTime) {
+				let date = new Date(this.selectedDay);
+				return date.setUTCHours(this.selectedTime);
+				
+			}
+			return null;
 		}
 	},
 	mounted() {
@@ -221,15 +230,6 @@ export default {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-}
-.margin-bottom-50 {
-	margin-bottom: 50px;
-}
-.margin-bottom-10 {
-	margin-bottom: 10px;
-}
-.margin-bottom-5 {
-	margin-bottom: 5px;
 }
 .selected {
 	background: #d0f4ff;

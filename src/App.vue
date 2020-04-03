@@ -95,4 +95,13 @@ export default {
 .fade-enter, .fade-leave-to {
   opacity: 0;
 }
+.margin-bottom-50 {
+	margin-bottom: 50px;
+}
+.margin-bottom-10 {
+	margin-bottom: 10px;
+}
+.margin-bottom-5 {
+	margin-bottom: 5px;
+}
 </style>
