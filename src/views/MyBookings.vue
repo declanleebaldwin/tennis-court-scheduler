@@ -45,8 +45,8 @@ export default {
 		formattedTime(time) {
 			return time < 10 ? "0" + time + ":00" : time + ":00";
 		},
-		formattedDate(bookingDateMilliSeconds) {
-			var bookingDate = new Date(bookingDateMilliSeconds);
+		formattedDate(bookingDateObject) {
+			var bookingDate = new Date(bookingDateObject.seconds * 1000);
 			var day = bookingDate.getDay();
 			day = this.convertDayLong(day);
 			var date = bookingDate.getDate();

@@ -190,11 +190,13 @@ export default {
 		},
 		selectedDateTime() {
 			if(this.selectedTime) {
-				let date = new Date(this.selectedDay);
-				return date.setUTCHours(this.selectedTime);
-				
+				let date = new Date();
+				date.setUTCHours(this.selectedTime - 1)
+				date.setUTCDate(this.selectedDay.getDate());
+				return date;
+			} else {
+				return null;
 			}
-			return null;
 		}
 	},
 	mounted() {
