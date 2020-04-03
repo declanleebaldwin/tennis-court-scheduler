@@ -8,17 +8,25 @@ const debug = process.env.NODE_ENV !== "production";
 export default new Vuex.Store({
 	strict: debug,
 	state: {
-		user: null
+		user: null,
+		showNotification: false,
+		notificationMessage: ""
 	},
 	getters: {
 		user(state) {
 			return state.user;
-		}
+		},
 	},
 	mutations: {
 		setUserData(state, user) {
 			state.user = user;
 		},
+		updateNotification(state, bool) {
+			state.showNotification = bool;
+		},
+		updateNotificationMessage(state, message) {
+			state.notificationMessage = message;
+		}
 	},
 	actions: {}
 });

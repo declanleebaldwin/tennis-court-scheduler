@@ -40,15 +40,22 @@
 				</div>
 			</div>
 		</div>
-		<div v-show="selectedTime !== null">
-			<p class="has-text-info is-size-4 margin-bottom-10">Booking Details</p>
-			<p class="margin-bottom-5">Your chosen 1 hour slot is {{ formattedDate }}, {{ formattedSelectedTime }}</p>
-			<button class="button is-success">Book Now</button>
-		</div>
+		<transition name="fade">
+			<div v-show="selectedTime !== null">
+				<p class="has-text-info is-size-4 margin-bottom-10">Booking Details</p>
+				<p class="margin-bottom-5">
+					Your chosen 1 hour slot is {{ formattedDate }}, {{ formattedSelectedTime }}
+				</p>
+				<button class="button is-success" :class="{ 'is-loading': loading }" @click="bookTimeSlot">
+					Book Now
+				</button>
+			</div>
+		</transition>
 	</div>
 </template>
 
 <script>
+import db from "@/fb";
 export default {
 	name: "Booking",
 	data() {
@@ -56,39 +63,26 @@ export default {
 			monday: null,
 			weekdays: [],
 			daysShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-            daysLong: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-            months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+			daysLong: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+			months: [
+				"January",
+				"February",
+				"March",
+				"April",
+				"May",
+				"June",
+				"July",
+				"August",
+				"September",
+				"October",
+				"November",
+				"December"
+			],
 			times: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
 			selectedDay: new Date(),
 			selectedTime: null,
-			bookings: [
-				{
-					person: {
-						id: 1,
-						name: "Declan Baldwin"
-					},
-					building: {
-						id: 1,
-						name: "Faraday"
-					},
-					flat: 6,
-					time: 13,
-					day: 1
-				},
-				{
-					person: {
-						id: 1,
-						name: "Declan Baldwin"
-					},
-					building: {
-						id: 1,
-						name: "Faraday"
-					},
-					flat: 6,
-					time: 10,
-					day: 3
-				}
-			]
+			bookings: [],
+			loading: false
 		};
 	},
 	methods: {
@@ -108,10 +102,10 @@ export default {
 		},
 		convertDayLong(day) {
 			return this.daysLong[day];
-        },
-        convertMonth(month) {
-            return this.months[month - 1];
-        },
+		},
+		convertMonth(month) {
+			return this.months[month - 1];
+		},
 		selectDay(weekday) {
 			this.selectedTime = null;
 			this.selectedDay = weekday;
@@ -142,6 +136,31 @@ export default {
 				}
 			});
 			return isAlreadyBooked;
+		},
+		bookTimeSlot() {
+			this.loading = true;
+			let $this = this;
+			let timeSlot = {
+				day: $this.selectedDay.getDay(),
+				time: $this.selectedTime,
+				uid: $this.user.uid,
+				week: $this.selectedDay.getWeek(),
+				year: $this.selectedDay.getFullYear()
+			};
+			db.collection("bookings")
+				.add(timeSlot)
+				.then(function(docRef) {
+					console.log("Document written with ID: ", docRef.id);
+					$this.$store.commit("updateNotificationMessage", "Your booking has been successful");
+					$this.$store.commit("updateNotification", true);
+					$this.selectedTime = null;
+					$this.selectedDay = new Date();
+					$this.loading = false;
+				})
+				.catch(function(error) {
+					console.error("Error adding document: ", error);
+					$this.loading = false;
+				});
 		}
 	},
 	computed: {
@@ -149,14 +168,44 @@ export default {
 			return this.selectedTime < 10 ? "0" + this.selectedTime + ":00" : this.selectedTime + ":00";
 		},
 		formattedDate() {
-            var day = this.selectedDay.getDay();
-            day = this.convertDayLong(day);
+			var day = this.selectedDay.getDay();
+			day = this.convertDayLong(day);
 			var date = this.selectedDay.getDate();
-            var month = this.selectedDay.getMonth() + 1;
-            month = this.convertMonth(month)
+			var month = this.selectedDay.getMonth() + 1;
+			month = this.convertMonth(month);
 			var year = this.selectedDay.getFullYear();
 			return day + " " + (date <= 9 ? "0" + date : date) + " " + month + " " + year;
+		},
+		currentWeek() {
+			let date = new Date();
+			return date.getWeek();
+		},
+		currentYear() {
+			let date = new Date();
+			return date.getFullYear();
+		},
+		user() {
+			return this.$store.getters.user;
 		}
+	},
+	mounted() {
+		let $this = this;
+		db.collection("bookings")
+			.where("week", "==", $this.currentWeek)
+			.where("year", "==", $this.currentYear)
+			.onSnapshot(function(querySnapshot) {
+				querySnapshot.forEach(
+					function(booking) {
+						$this.bookings.push({
+							id: booking.id,
+							...booking.data()
+						});
+					},
+					function(error) {
+						console.log("Error getting documents: ", error);
+					}
+				);
+			});
 	},
 	created() {
 		this.monday = this.getMonday();

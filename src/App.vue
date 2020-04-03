@@ -44,13 +44,17 @@
 			</div>
 		</section>
 		<router-view />
+		<Notification />
 	</div>
 </template>
 <script>
 import firebase from "firebase";
 import { mapState } from "vuex";
-
+import Notification from "@/components/Notification.vue";
 export default {
+	components: {
+		Notification
+	},
 	methods: {
 		signOut() {
 			let $this = this;
@@ -84,5 +88,11 @@ export default {
 	margin-right: 5px;
 	position: relative;
 	top: 2px;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 </style>

@@ -129,6 +129,8 @@ export default {
 							.then(() => {
 								$this.showModal = false;
 								$this.loading = false;
+								$this.$store.commit("updateNotificationMessage", "Your address has been updated.");
+								$this.$store.commit("updateNotification", true);
 							});
 					});
 				})
@@ -153,15 +155,18 @@ export default {
 		db.collection("addresses")
 			.where("users", "array-contains", $this.user.uid)
 			.onSnapshot(function(querySnapshot) {
-				querySnapshot.forEach(function(address) {
-					$this.address = {
-						id: address.id,
-						...address.data()
-					};
-				}, function(error) {
-                    console.log("Error getting documents: ", error)
-                });
-            })
+				querySnapshot.forEach(
+					function(address) {
+						$this.address = {
+							id: address.id,
+							...address.data()
+						};
+					},
+					function(error) {
+						console.log("Error getting documents: ", error);
+					}
+				);
+			});
 		db.collection("buildings")
 			.get()
 			.then(querySnapshot => {
