@@ -3,7 +3,8 @@
 		<div class="modal-background"></div>
 		<div class="modal-card">
 			<header class="modal-card-head">
-				<p class="modal-card-title">Edit Address</p>
+				<p v-if="hasRegisteredAddress" class="modal-card-title">Edit Address</p>
+				<p v-else class="modal-card-title">Register Address</p>
 				<button class="delete" aria-label="close" @click="$emit('hideModal')"></button>
 			</header>
 			<section class="modal-card-body">
@@ -39,8 +40,16 @@
 				</div>
 			</section>
 			<footer class="modal-card-foot">
-				<button class="button is-success" @click="updateAddress" :class="{ 'is-loading': loading }">
+				<button
+					v-if="hasRegisteredAddress"
+					class="button is-success"
+					@click="updateAddress"
+					:class="{ 'is-loading': loading }"
+				>
 					Update
+				</button>
+				<button v-else class="button is-success" @click="registerAddress" :class="{ 'is-loading': loading }">
+					Register
 				</button>
 				<button class="button" @click="showModal = false">Cancel</button>
 			</footer>
@@ -85,6 +94,13 @@ export default {
 				this.errors.flat = false;
 			}
 		},
+		registerAddress() {
+			this.validateBuilding();
+			this.validateFlat();
+			if (!this.errors.building && !this.errors.flat) {
+				this.addNewAddress();
+			}
+		},
 		updateAddress() {
 			this.validateBuilding();
 			this.validateFlat();
@@ -116,16 +132,18 @@ export default {
 								users: firebase.firestore.FieldValue.arrayUnion($this.user.uid)
 							})
 							.then(() => {
-								$this.$emit('hideModal');
+								$this.$emit("hideModal");
 								$this.loading = false;
 								$this.$store.commit("updateNotificationColour", "is-info");
 								$this.$store.commit("updateNotificationMessage", "Your address has been updated.");
-								$this.$store.commit("updateNotification", true);
+                                $this.$store.commit("updateNotification", true);
+                                $this.$store.commit("updateHasRegisteredAddress", true);
+                                $this.$emit('getUsersAddress');
 							});
 					});
 				})
 				.catch(function(error) {
-                    $this.$emit('hideModal');
+					$this.$emit("hideModal");
 					$this.loading = false;
 					console.log("Error getting documents: ", error);
 					$this.$store.commit("updateNotificationColour", "is-danger");
@@ -134,7 +152,7 @@ export default {
 				});
 		}
 	},
-	computed: mapState(["user"]),
+	computed: mapState(["user", "hasRegisteredAddress"]),
 	watch: {
 		selectedBuildingName(newBuildingName) {
 			let $this = this;

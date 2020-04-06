@@ -13,13 +13,13 @@
 						</div>
 						<div v-if="user" id="navbarMenuHeroC" class="navbar-menu">
 							<div class="navbar-end">
-								<router-link id="navbar-make-a-booking" class="navbar-item" to="/admin"
+								<router-link v-show="hasRegisteredAddress" id="navbar-make-a-booking" class="navbar-item" to="/admin"
 									>Admin</router-link
 								>
-								<router-link id="navbar-make-a-booking" class="navbar-item" to="/booking"
+								<router-link v-show="hasRegisteredAddress" id="navbar-make-a-booking" class="navbar-item" to="/booking"
 									>Make a Booking</router-link
 								>
-								<router-link id="navbar-my-bookings" class="navbar-item" to="/my-bookings"
+								<router-link v-show="hasRegisteredAddress" id="navbar-my-bookings" class="navbar-item" to="/my-bookings"
 									>My Bookings</router-link
 								>
 								<router-link id="navbar-my-account" class="navbar-item" to="/my-account"
@@ -70,7 +70,7 @@ export default {
 				});
 		}
 	},
-	computed: mapState(["user"])
+	computed: mapState(["user", "hasRegisteredAddress"])
 };
 </script>
 <style lang="css">

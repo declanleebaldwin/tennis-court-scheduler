@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import db from "@/fb";
 
 Vue.use(Vuex);
 
@@ -9,6 +10,7 @@ export default new Vuex.Store({
 	strict: debug,
 	state: {
 		user: null,
+		hasRegisteredAddress: false,
 		showNotification: false,
 		notificationMessage: "",
 		notificationColour: ""
@@ -16,7 +18,7 @@ export default new Vuex.Store({
 	getters: {
 		user(state) {
 			return state.user;
-		},
+		}
 	},
 	mutations: {
 		setUserData(state, user) {
@@ -30,7 +32,35 @@ export default new Vuex.Store({
 		},
 		updateNotificationColour(state, colour) {
 			state.notificationColour = colour;
+		},
+		updateHasRegisteredAddress(state, bool) {
+			state.hasRegisteredAddress = bool;
 		}
 	},
-	actions: {}
+	actions: {
+		checkIfUserHasAddresssAsync({ commit, state }) {
+			return new Promise((resolve, reject) => {
+				db.collection("addresses")
+					.where("users", "array-contains", state.user.uid)
+					.get()
+					.then(function(querySnapshot) {
+						let addresses = [];
+						querySnapshot.forEach(function(doc) {
+							addresses.push(doc.data());	
+						});
+						if(addresses.length > 0) {
+							commit("updateHasRegisteredAddress", true);
+						} else {
+							commit("updateHasRegisteredAddress", false);
+						}
+						resolve()
+					})
+					.catch(function(error) {
+						console.log("Error getting documents: ", error);
+						reject();
+					});
+			});
+
+		}
+	}
 });

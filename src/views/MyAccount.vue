@@ -1,13 +1,17 @@
 <template>
 	<div class="container">
 		<h2 class="title">{{ user.displayName }}</h2>
-		<div class="address-container" v-if="address">
-			<p class="has-text-grey is-size-5 is-capitalized">
+		<div class="address-container" v-if="hasRegisteredAddress">
+			<p v-if="address" class="has-text-grey is-size-5 is-capitalized">
 				Flat {{ address.flat }}, {{ address.building }} Mansions
 			</p>
 			<i class="material-icons edit-icon" title="Edit" @click="showModal = true">edit</i>
 		</div>
-		<AddressModal :address="address" :isModalDisplayed="showModal" @hideModal="showModal = false" />
+		<div v-else>
+			<p class="has-text-grey margin-bottom-10">Before you can book a court you need to register your address.</p>
+			<button class="button is-info" @click="showModal = true">Register Address</button>
+		</div>
+		<AddressModal @getUsersAddress="getAddress" :address="address" :isModalDisplayed="showModal" @hideModal="showModal = false" />
 	</div>
 </template>
 <script>
@@ -23,27 +27,33 @@ export default {
 	data() {
 		return {
 			address: null,
-			showModal: false,
+			showModal: false
 		};
 	},
-    computed: mapState(["user"]),
-	mounted() {
-		let $this = this;
-		db.collection("addresses")
-			.where("users", "array-contains", $this.user.uid)
-			.onSnapshot(function(querySnapshot) {
-				querySnapshot.forEach(
-					function(address) {
-						$this.address = {
-							id: address.id,
-							...address.data()
-						};
+	methods: {
+		getAddress() {
+			let $this = this;
+			db.collection("addresses")
+				.where("users", "array-contains", $this.user.uid)
+				.onSnapshot(
+					function(querySnapshot) {
+						querySnapshot.forEach(function(address) {
+							$this.address = {
+								id: address.id,
+								...address.data()
+							};
+						});
 					},
 					function(error) {
 						console.log("Error getting documents: ", error);
 					}
 				);
-			});
+		}
+	},
+	computed: mapState(["user", "hasRegisteredAddress"]),
+	mounted() {
+		if (!this.hasRegisteredAddress) return;
+		this.getAddress();
 	}
 };
 </script>
