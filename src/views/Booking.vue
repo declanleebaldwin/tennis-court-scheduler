@@ -150,8 +150,7 @@ export default {
 			};
 			db.collection("bookings")
 				.add(timeSlot)
-				.then(function(docRef) {
-					console.log("Document written with ID: ", docRef.id);
+				.then(function() {
 					$this.$store.commit("updateNotificationMessage", "Your booking has been successful");
 					$this.$store.commit("updateNotification", true);
 					$this.selectedTime = null;
@@ -161,6 +160,9 @@ export default {
 				.catch(function(error) {
 					console.error("Error adding document: ", error);
 					$this.loading = false;
+					$this.$store.commit("updateNotificationColour", "is-danger");
+					$this.$store.commit("updateNotificationMessage", "Error adding document: ", error);
+					$this.$store.commit("updateNotification", true);
 				});
 		}
 	},
@@ -189,9 +191,9 @@ export default {
 			return this.$store.getters.user;
 		},
 		selectedDateTime() {
-			if(this.selectedTime) {
+			if (this.selectedTime) {
 				let date = new Date();
-				date.setUTCHours(this.selectedTime - 1)
+				date.setUTCHours(this.selectedTime - 1);
 				date.setUTCDate(this.selectedDay.getDate());
 				return date;
 			} else {
@@ -214,6 +216,9 @@ export default {
 					},
 					function(error) {
 						console.log("Error getting documents: ", error);
+						$this.$store.commit("updateNotificationColour", "is-danger");
+						$this.$store.commit("updateNotificationMessage", "Error getting documents: ", error);
+						$this.$store.commit("updateNotification", true);
 					}
 				);
 			});

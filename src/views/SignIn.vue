@@ -1,24 +1,32 @@
 <template>
 	<div class="container">
-		<p class="has-text-grey margin-bottom-10">Welcome to Queens Club Gardens Tennis Scheduler, please sign in to book a tennis court.</p>
-		<button class="button is-link" @click="signIn">Sign In</button>
+		<p class="has-text-grey margin-bottom-10">
+			Welcome to Queens Club Gardens Tennis Scheduler, please sign in to book a tennis court.
+		</p>
+		<button class="button is-link" :class="{ 'is-loading': loading }" @click="signIn">Sign In</button>
 	</div>
 </template>
 
 <script>
 import firebase from "firebase";
-import { mapState } from 'vuex';
+import { mapState } from "vuex";
 export default {
 	name: "SignIn",
+	data() {
+		return {
+			loading: false
+		};
+	},
 	methods: {
 		signIn() {
+			this.loading = true;
 			let $this = this;
 			var provider = new firebase.auth.GoogleAuthProvider();
 			firebase
 				.auth()
 				.signInWithPopup(provider)
 				.then(function(result) {
-					console.log(result.user);
+					$this.loading = false;
 					// $this.token = result.credential.accessToken;
 					$this.$store.commit("setUserData", {
 						uid: result.user.uid,
@@ -29,13 +37,15 @@ export default {
 					$this.$router.replace({ name: "Booking" });
 				})
 				.catch(function(error) {
-					console.log(error);
+					$this.loading = false;
+					console.log("Error Signing In: ", error);
+					$this.$store.commit("updateNotificationColour", "is-danger");
+					$this.$store.commit("updateNotificationMessage", "Error Signing In: ", error);
+					$this.$store.commit("updateNotification", true);
 				});
 		}
 	},
-	computed: mapState([
-        'user'
-    ]),
+	computed: mapState(["user"])
 };
 </script>
 

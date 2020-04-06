@@ -10,7 +10,8 @@ export default new Vuex.Store({
 	state: {
 		user: null,
 		showNotification: false,
-		notificationMessage: ""
+		notificationMessage: "",
+		notificationColour: ""
 	},
 	getters: {
 		user(state) {
@@ -26,6 +27,9 @@ export default new Vuex.Store({
 		},
 		updateNotificationMessage(state, message) {
 			state.notificationMessage = message;
+		},
+		updateNotificationColour(state, colour) {
+			state.notificationColour = colour;
 		}
 	},
 	actions: {}

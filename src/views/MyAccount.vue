@@ -129,13 +129,19 @@ export default {
 							.then(() => {
 								$this.showModal = false;
 								$this.loading = false;
+								$this.$store.commit("updateNotificationColour", "is-info");
 								$this.$store.commit("updateNotificationMessage", "Your address has been updated.");
 								$this.$store.commit("updateNotification", true);
 							});
 					});
 				})
 				.catch(function(error) {
+					$this.loading = false;
 					console.log("Error getting documents: ", error);
+					$this.$store.commit("updateNotificationColour", "is-danger");
+					$this.$store.commit("updateNotificationMessage", "Error getting documents: ", error);
+					$this.$store.commit("updateNotification", true);
+
 				});
 		}
 	},

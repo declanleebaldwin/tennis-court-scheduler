@@ -1,7 +1,7 @@
 <template>
 	<transition name="fade">
 		<section v-show="showNotification" class="notification-container">
-			<div class="notification is-info is-light">
+			<div class="notification is-light" :class="notificationColour">
 				<button @click="hideNotification" class="delete"></button>
 				{{ notificationMessage }}
 			</div>
@@ -19,7 +19,7 @@ export default {
 			this.$store.commit("updateNotification", false);
 		}
 	},
-	computed: mapState(["showNotification", "notificationMessage"]),
+	computed: mapState(["showNotification", "notificationMessage", "notificationColour"]),
 	watch: {
 		showNotification() {
 			if (this.showNotification) {

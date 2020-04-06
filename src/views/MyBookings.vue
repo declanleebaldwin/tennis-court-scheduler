@@ -1,16 +1,27 @@
 <template>
 	<div class="container">
 		<h2 class="title">My Bookings</h2>
-		<div>
-			<p class="has-text-info margin-bottom-10">Please find below your bookings for this week</p>
+		<div v-if="bookings.length > 0">
+			<p class="has-text-info margin-bottom-10">Your bookings for this week.</p>
 			<div class="columns" v-for="booking in bookings" :key="booking.id">
-				<div class="column is-half" >
+				<div class="column is-half">
 					<div class="card booking-container">
-						<div class="card-content booking-datetime">{{ formattedDate(booking.date) }}, {{ formattedTime(booking.time) }}</div>
-						<button class="button is-danger">Cancel</button>
+						<div class="card-content booking-datetime">
+							{{ formattedDate(booking.date) }}, {{ formattedTime(booking.time) }}
+						</div>
+						<button
+							class="button is-danger"
+							:class="{ 'is-loading': loading }"
+							@click="removeBooking(booking.id)"
+						>
+							Cancel
+						</button>
 					</div>
 				</div>
 			</div>
+		</div>
+		<div v-else>
+			<p class="has-text-info margin-bottom-10">You currently have no bookings for this week.</p>
 		</div>
 	</div>
 </template>
@@ -38,7 +49,8 @@ export default {
 				"October",
 				"November",
 				"December"
-			]
+			],
+			loading: false
 		};
 	},
 	methods: {
@@ -60,30 +72,67 @@ export default {
 		},
 		convertDayLong(day) {
 			return this.daysLong[day];
+		},
+		removeBooking(bookingID) {
+			this.loading = true;
+			let $this = this;
+			db.collection("bookings")
+				.doc(bookingID)
+				.delete()
+				.then(function() {
+					$this.loading = false;
+					$this.getBookings();
+					$this.$store.commit("updateNotificationMessage", "Your booking has been cancelled.");
+					$this.$store.commit("updateNotification", true);
+				})
+				.catch(function(error) {
+					$this.loading = false;
+					console.error("Error removing document: ", error);
+					$this.$store.commit("updateNotificationColour", "is-danger");
+					$this.$store.commit("updateNotificationMessage", "Error removing document: ", error);
+					$this.$store.commit("updateNotification", true);
+				});
+		},
+		getBookings() {
+			let $this = this;
+			db.collection("bookings")
+				.where("uid", "==", $this.user.uid)
+				.where("week", "==", $this.currentWeek)
+				.where("year", "==", $this.currentYear)
+				.onSnapshot(function(querySnapshot) {
+					$this.bookings = [];
+					querySnapshot.forEach(
+						function(booking) {
+							$this.bookings.push({
+								id: booking.id,
+								...booking.data()
+							});
+						},
+						function(error) {
+							console.log("Error getting documents: ", error);
+							$this.$store.commit("updateNotificationColour", "is-danger");
+							$this.$store.commit("updateNotificationMessage", "Error getting documents: ", error);
+							$this.$store.commit("updateNotification", true);
+						}
+					);
+				});
 		}
 	},
 	computed: {
 		user() {
 			return this.$store.getters.user;
+		},
+		currentWeek() {
+			let date = new Date();
+			return date.getWeek();
+		},
+		currentYear() {
+			let date = new Date();
+			return date.getFullYear();
 		}
 	},
 	mounted() {
-		let $this = this;
-		db.collection("bookings")
-			.where("uid", "==", $this.user.uid)
-			.onSnapshot(function(querySnapshot) {
-				querySnapshot.forEach(
-					function(booking) {
-						$this.bookings.push({
-							id: booking.id,
-							...booking.data()
-						});
-					},
-					function(error) {
-						console.log("Error getting documents: ", error);
-					}
-				);
-			});
+		this.getBookings();
 	}
 };
 </script>
