@@ -13,9 +13,9 @@
 						</div>
 						<div v-if="user" id="navbarMenuHeroC" class="navbar-menu">
 							<div class="navbar-end">
-								<router-link v-show="hasRegisteredAddress" id="navbar-make-a-booking" class="navbar-item" to="/admin"
+								<!-- <router-link v-show="hasRegisteredAddress" id="navbar-make-a-booking" class="navbar-item" to="/admin"
 									>Admin</router-link
-								>
+								> -->
 								<router-link v-show="hasRegisteredAddress" id="navbar-make-a-booking" class="navbar-item" to="/booking"
 									>Make a Booking</router-link
 								>

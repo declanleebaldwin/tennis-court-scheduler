@@ -34,7 +34,7 @@ export default {
 						email: result.user.email
 					});
 					// check if user's email is a registered Queens Club Gardens member
-					$this.$router.replace({ name: "MyAccount" });
+					$this.$router.replace({ name: "Booking" });
 				})
 				.catch(function(error) {
 					$this.loading = false;
