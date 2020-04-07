@@ -47,7 +47,7 @@
 		<transition name="fade">
 			<div v-show="selectedTime !== null && !hasUserAlreadyMadeBookingForSelectedDay">
 				<p class="has-text-info is-size-4 margin-bottom-10">Booking Details</p>
-				<p class="margin-bottom-5">
+				<p class="has-text-grey margin-bottom-5">
 					Your chosen 1 hour slot is {{ formattedDate }}, {{ formattedSelectedTime }}
 				</p>
 				<button class="button is-success" :class="{ 'is-loading': loading }" @click="bookTimeSlot">
@@ -58,7 +58,7 @@
 		<transition name="fade">
 			<div v-show="selectedTime != null && hasUserAlreadyMadeBookingForSelectedDay">
 				<p class="has-text-info is-size-4 margin-bottom-10">Booking Details</p>
-				<p class="margin-bottom-5">
+				<p class="has-text-grey margin-bottom-5">
 					You already have a booking for this day, please select a different slot.
 				</p>
 			</div>

@@ -88,7 +88,6 @@ export default {
 				})
 				.catch(function(error) {
 					$this.loading = false;
-					console.error("Error removing document: ", error);
 					$this.$store.commit("updateNotificationColour", "is-danger");
 					$this.$store.commit("updateNotificationMessage", "Error removing document: ", error);
 					$this.$store.commit("updateNotification", true);
@@ -110,7 +109,6 @@ export default {
 							});
 						},
 						function(error) {
-							console.log("Error getting documents: ", error);
 							$this.$store.commit("updateNotificationColour", "is-danger");
 							$this.$store.commit("updateNotificationMessage", "Error getting documents: ", error);
 							$this.$store.commit("updateNotification", true);
