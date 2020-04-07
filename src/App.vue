@@ -5,7 +5,12 @@
 				<header class="navbar">
 					<div class="container">
 						<div class="navbar-brand">
-							<span class="navbar-burger burger" data-target="navbarMenuHeroC" @click="isActive=!isActive">
+							<span
+								class="navbar-burger burger"
+								:class="{ 'is-active': isActive }"
+								data-target="navbarMenuHeroC"
+								@click="isActive = !isActive"
+							>
 								<span></span>
 								<span></span>
 								<span></span>
@@ -16,10 +21,18 @@
 								<!-- <router-link v-show="hasRegisteredAddress" id="navbar-make-a-booking" class="navbar-item" to="/admin"
 									>Admin</router-link
 								> -->
-								<router-link v-show="hasRegisteredAddress" id="navbar-make-a-booking" class="navbar-item" to="/booking"
+								<router-link
+									v-show="hasRegisteredAddress"
+									id="navbar-make-a-booking"
+									class="navbar-item"
+									to="/booking"
 									>Make a Booking</router-link
 								>
-								<router-link v-show="hasRegisteredAddress" id="navbar-my-bookings" class="navbar-item" to="/my-bookings"
+								<router-link
+									v-show="hasRegisteredAddress"
+									id="navbar-my-bookings"
+									class="navbar-item"
+									to="/my-bookings"
 									>My Bookings</router-link
 								>
 								<router-link id="navbar-my-account" class="navbar-item" to="/my-account"
@@ -60,7 +73,7 @@ export default {
 	data() {
 		return {
 			isActive: false
-		}
+		};
 	},
 	methods: {
 		signOut() {
@@ -96,11 +109,13 @@ export default {
 	position: relative;
 	top: 2px;
 }
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.5s;
 }
-.fade-enter, .fade-leave-to {
-  opacity: 0;
+.fade-enter,
+.fade-leave-to {
+	opacity: 0;
 }
 .margin-bottom-50 {
 	margin-bottom: 50px;
@@ -110,5 +125,11 @@ export default {
 }
 .margin-bottom-5 {
 	margin-bottom: 5px;
+}
+
+@media only screen and (max-width: 1025px) {
+	.account {
+		top: 6px;
+	}
 }
 </style>
