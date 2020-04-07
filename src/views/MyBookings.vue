@@ -82,6 +82,7 @@ export default {
 				.then(function() {
 					$this.loading = false;
 					$this.getBookings();
+					$this.$store.commit("updateNotificationColour", "is-info");
 					$this.$store.commit("updateNotificationMessage", "Your booking has been cancelled.");
 					$this.$store.commit("updateNotification", true);
 				})

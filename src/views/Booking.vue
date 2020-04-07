@@ -45,7 +45,7 @@
 			</div>
 		</div>
 		<transition name="fade">
-			<div v-show="selectedTime !== null">
+			<div v-show="selectedTime !== null && !hasUserAlreadyMadeBookingForSelectedDay">
 				<p class="has-text-info is-size-4 margin-bottom-10">Booking Details</p>
 				<p class="margin-bottom-5">
 					Your chosen 1 hour slot is {{ formattedDate }}, {{ formattedSelectedTime }}
@@ -53,6 +53,14 @@
 				<button class="button is-success" :class="{ 'is-loading': loading }" @click="bookTimeSlot">
 					Book Now
 				</button>
+			</div>
+		</transition>
+		<transition name="fade">
+			<div v-show="selectedTime != null && hasUserAlreadyMadeBookingForSelectedDay">
+				<p class="has-text-info is-size-4 margin-bottom-10">Booking Details</p>
+				<p class="margin-bottom-5">
+					You already have a booking for this day, please select a different slot.
+				</p>
 			</div>
 		</transition>
 	</div>
@@ -111,7 +119,7 @@ export default {
 			return this.months[month - 1];
 		},
 		selectDay(weekday) {
-			if(this.isDayInPast(weekday)) return;
+			if (this.isDayInPast(weekday)) return;
 			this.selectedTime = null;
 			this.selectedDay = weekday;
 		},
@@ -156,6 +164,7 @@ export default {
 			db.collection("bookings")
 				.add(timeSlot)
 				.then(function() {
+					$this.$store.commit("updateNotificationColour", "is-info");
 					$this.$store.commit("updateNotificationMessage", "Your booking has been successful");
 					$this.$store.commit("updateNotification", true);
 					$this.selectedTime = null;
@@ -212,6 +221,17 @@ export default {
 			} else {
 				return null;
 			}
+		},
+		hasUserAlreadyMadeBookingForSelectedDay() {
+			if (!this.selectedDay) return false;
+			let $this = this;
+			let hasUserAlreadyMadeBookingForSelectedDay = false;
+			this.bookings.forEach(booking => {
+				if ($this.selectedDay.getDay() == booking.day && $this.user.uid == booking.uid) {
+					hasUserAlreadyMadeBookingForSelectedDay = true;
+				}
+			});
+			return hasUserAlreadyMadeBookingForSelectedDay;
 		}
 	},
 	mounted() {
