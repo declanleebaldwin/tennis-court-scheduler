@@ -51,6 +51,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
+	store.commit("updateShowNavbar", false);
 	const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 	let user = await firebase.getCurrentUser();
 	if (requiresAuth && !user) {

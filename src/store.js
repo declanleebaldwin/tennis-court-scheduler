@@ -13,7 +13,8 @@ export default new Vuex.Store({
 		hasRegisteredAddress: false,
 		showNotification: false,
 		notificationMessage: "",
-		notificationColour: ""
+		notificationColour: "",
+		showNavBar: false
 	},
 	getters: {
 		user(state) {
@@ -35,6 +36,9 @@ export default new Vuex.Store({
 		},
 		updateHasRegisteredAddress(state, bool) {
 			state.hasRegisteredAddress = bool;
+		},
+		updateShowNavbar(state, bool) {
+			state.showNavBar = bool
 		}
 	},
 	actions: {

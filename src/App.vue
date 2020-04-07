@@ -7,16 +7,16 @@
 						<div class="navbar-brand">
 							<span
 								class="navbar-burger burger"
-								:class="{ 'is-active': isActive }"
+								:class="{ 'is-active': showNavBar }"
 								data-target="navbarMenuHeroC"
-								@click="isActive = !isActive"
+								@click="updateShowNavbar"
 							>
 								<span></span>
 								<span></span>
 								<span></span>
 							</span>
 						</div>
-						<div v-if="user" id="navbarMenuHeroC" class="navbar-menu" :class="{ 'is-active': isActive }">
+						<div v-if="user" id="navbarMenuHeroC" class="navbar-menu" :class="{ 'is-active': showNavBar }">
 							<div class="navbar-end">
 								<!-- <router-link v-show="hasRegisteredAddress" id="navbar-make-a-booking" class="navbar-item" to="/admin"
 									>Admin</router-link
@@ -88,9 +88,12 @@ export default {
 				.catch(function(error) {
 					console.log(error);
 				});
+		},
+		updateShowNavbar() {
+			this.$store.commit("updateShowNavbar", !this.showNavBar);
 		}
 	},
-	computed: mapState(["user", "hasRegisteredAddress"])
+	computed: mapState(["user", "hasRegisteredAddress", "showNavBar"])
 };
 </script>
 <style lang="css">
