@@ -14,7 +14,11 @@
 					@click="selectDay(weekday)"
 					:class="{ selected: isSelectedDay(weekday) }"
 				>
-					<div class="calendarBoxDay has-text-grey">
+					<div v-if="isDayInPast(weekday)" class="calendarBoxDayDisabled has-text-grey">
+						<div>{{ convertDayShort(weekday.getDay()) }}</div>
+						<div class="is-size-3">{{ weekday.getDate() }}</div>
+					</div>
+					<div v-else class="calendarBoxDay has-text-grey">
 						<div>{{ convertDayShort(weekday.getDay()) }}</div>
 						<div class="is-size-3">{{ weekday.getDate() }}</div>
 					</div>
@@ -107,6 +111,7 @@ export default {
 			return this.months[month - 1];
 		},
 		selectDay(weekday) {
+			if(this.isDayInPast(weekday)) return;
 			this.selectedTime = null;
 			this.selectedDay = weekday;
 		},
@@ -164,6 +169,14 @@ export default {
 					$this.$store.commit("updateNotificationMessage", "Error adding document: ", error);
 					$this.$store.commit("updateNotification", true);
 				});
+		},
+		isDayInPast(weekday) {
+			let today = new Date();
+			if (today.getDate() > weekday.getDate()) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	},
 	computed: {
@@ -259,5 +272,10 @@ export default {
 	border: 1px solid lightgrey;
 	min-height: 80px;
 	cursor: pointer;
+}
+.calendarBoxDayDisabled {
+	border: 1px solid lightgrey;
+	padding: 10px;
+	background: rgb(235, 235, 235);
 }
 </style>
