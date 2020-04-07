@@ -6,7 +6,7 @@
 				Bookings are released every Monday. Residents can book one hour slot per day.
 			</p>
 			<p class="has-text-info margin-bottom-10">Select a day</p>
-			<div class="columns is-gapless is-mobile">
+			<div class="columns is-gapless">
 				<div
 					class="column"
 					v-for="(weekday, index) in weekdays"

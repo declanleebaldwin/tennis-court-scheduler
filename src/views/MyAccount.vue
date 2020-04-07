@@ -1,8 +1,8 @@
 <template>
 	<div class="container">
 		<h2 class="title">{{ user.displayName }}</h2>
-		<div class="address-container" v-if="hasRegisteredAddress">
-			<p v-if="address" class="has-text-grey is-size-5 is-capitalized">
+		<div class="address-container" v-if="hasRegisteredAddress && address">
+			<p class="has-text-grey is-size-5 is-capitalized">
 				Flat {{ address.flat }}, {{ address.building }} Mansions
 			</p>
 			<i class="material-icons edit-icon" title="Edit" @click="showModal = true">edit</i>
@@ -52,7 +52,6 @@ export default {
 	},
 	computed: mapState(["user", "hasRegisteredAddress"]),
 	mounted() {
-		if (!this.hasRegisteredAddress) return;
 		this.getAddress();
 	}
 };

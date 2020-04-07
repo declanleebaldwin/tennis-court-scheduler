@@ -5,13 +5,13 @@
 				<header class="navbar">
 					<div class="container">
 						<div class="navbar-brand">
-							<span class="navbar-burger burger" data-target="navbarMenuHeroC">
+							<span class="navbar-burger burger" data-target="navbarMenuHeroC" @click="isActive=!isActive">
 								<span></span>
 								<span></span>
 								<span></span>
 							</span>
 						</div>
-						<div v-if="user" id="navbarMenuHeroC" class="navbar-menu">
+						<div v-if="user" id="navbarMenuHeroC" class="navbar-menu" :class="{ 'is-active': isActive }">
 							<div class="navbar-end">
 								<!-- <router-link v-show="hasRegisteredAddress" id="navbar-make-a-booking" class="navbar-item" to="/admin"
 									>Admin</router-link
@@ -43,7 +43,9 @@
 				</div>
 			</div>
 		</section>
-		<router-view />
+		<div class="section">
+			<router-view />
+		</div>
 		<Notification />
 	</div>
 </template>
@@ -54,6 +56,11 @@ import Notification from "@/components/Notification.vue";
 export default {
 	components: {
 		Notification
+	},
+	data() {
+		return {
+			isActive: false
+		}
 	},
 	methods: {
 		signOut() {
