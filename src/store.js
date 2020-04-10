@@ -43,6 +43,7 @@ export default new Vuex.Store({
 	},
 	actions: {
 		checkIfUserHasAddresssAsync({ commit, state }) {
+			if(!state.user) return;
 			return new Promise((resolve, reject) => {
 				db.collection("addresses")
 					.where("users", "array-contains", state.user.uid)
