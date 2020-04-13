@@ -38,7 +38,6 @@ export default {
 				})
 				.catch(function(error) {
 					$this.loading = false;
-					console.log("Error Signing In: ", error);
 					$this.$store.commit("updateNotificationColour", "is-danger");
 					$this.$store.commit("updateNotificationMessage", "Error Signing In: ", error);
 					$this.$store.commit("updateNotification", true);

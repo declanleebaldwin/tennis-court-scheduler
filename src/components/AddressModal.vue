@@ -145,7 +145,6 @@ export default {
 				.catch(function(error) {
 					$this.$emit("hideModal");
 					$this.loading = false;
-					console.log("Error getting documents: ", error);
 					$this.$store.commit("updateNotificationColour", "is-danger");
 					$this.$store.commit("updateNotificationMessage", "Error getting documents: ", error);
 					$this.$store.commit("updateNotification", true);
@@ -175,7 +174,9 @@ export default {
 				});
 			})
 			.catch(function(error) {
-				console.log("Error getting documents: ", error);
+				$this.$store.commit("updateNotificationColour", "is-danger");
+				$this.$store.commit("updateNotificationMessage", "Error getting buildings: ", error);
+				$this.$store.commit("updateNotification", true);
 			});
 	}
 };

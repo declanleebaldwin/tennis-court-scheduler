@@ -86,7 +86,9 @@ export default {
 					$this.$router.replace({ name: "SignIn" });
 				})
 				.catch(function(error) {
-					console.log(error);
+					$this.$store.commit("updateNotificationColour", "is-danger");
+					$this.$store.commit("updateNotificationMessage", "Error Signing Out: ", error);
+					$this.$store.commit("updateNotification", true);
 				});
 		},
 		updateShowNavbar() {

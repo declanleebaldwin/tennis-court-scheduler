@@ -60,8 +60,7 @@ export default new Vuex.Store({
 						}
 						resolve()
 					})
-					.catch(function(error) {
-						console.log("Error getting documents: ", error);
+					.catch(function() {
 						reject();
 					});
 			});
