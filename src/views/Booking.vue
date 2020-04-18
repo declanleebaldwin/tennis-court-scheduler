@@ -3,8 +3,9 @@
 		<h2 class="title">Make a Booking</h2>
 		<div class="margin-bottom-50">
 			<p class="has-text-grey margin-bottom-10">
-				Bookings are released every Monday.<br/> 
-				Each flat can book a one hour time slot in the week (Mon - Fri), and another one hour time slot at the weekend (Sat - Sun).
+				Bookings are released every Monday.<br />
+				Each flat can book a one hour time slot in the week (Mon - Fri), and another one hour time slot at the
+				weekend (Sat - Sun).
 			</p>
 			<p class="has-text-info margin-bottom-10">Select a day</p>
 			<div class="columns is-gapless">
@@ -46,7 +47,7 @@
 			</div>
 		</div>
 		<transition name="fade">
-			<div v-show="selectedTime !== null && !hasUserAlreadyMadeBookingForSelectedDay">
+			<div v-show="selectedTime !== null && !hasFlatAlreadyMadeBooking">
 				<p class="has-text-info is-size-4 margin-bottom-10">Booking Details</p>
 				<p class="has-text-grey margin-bottom-5">
 					Your chosen 1 hour slot is {{ formattedDate }}, {{ formattedSelectedTime }}
@@ -57,10 +58,10 @@
 			</div>
 		</transition>
 		<transition name="fade">
-			<div v-show="selectedTime != null && hasUserAlreadyMadeBookingForSelectedDay">
+			<div v-show="selectedTime != null && hasFlatAlreadyMadeBooking">
 				<p class="has-text-info is-size-4 margin-bottom-10">Booking Details</p>
 				<p class="has-text-grey margin-bottom-5">
-					You already have a booking for this day, please select a different slot.
+					{{ flatHasAlreadyMadeABookingMessage }}
 				</p>
 			</div>
 		</transition>
@@ -89,13 +90,13 @@ export default {
 				"September",
 				"October",
 				"November",
-				"December"
+				"December",
 			],
 			times: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
 			selectedDay: new Date(),
 			selectedTime: null,
 			bookings: [],
-			loading: false
+			loading: false,
 		};
 	},
 	methods: {
@@ -144,7 +145,7 @@ export default {
 		},
 		isAlreadyBooked(time) {
 			let isAlreadyBooked = false;
-			this.bookings.forEach(booking => {
+			this.bookings.forEach((booking) => {
 				if (this.selectedDay.getDay() === booking.day && time === booking.time) {
 					isAlreadyBooked = true;
 				}
@@ -160,7 +161,8 @@ export default {
 				uid: $this.user.uid,
 				week: $this.selectedDay.getWeek(),
 				year: $this.selectedDay.getFullYear(),
-				date: $this.selectedDateTime
+				date: $this.selectedDateTime,
+				addressid: $this.address.id,
 			};
 			db.collection("bookings")
 				.add(timeSlot)
@@ -187,7 +189,7 @@ export default {
 			} else {
 				return false;
 			}
-		}
+		},
 	},
 	computed: {
 		formattedSelectedTime() {
@@ -213,6 +215,9 @@ export default {
 		user() {
 			return this.$store.getters.user;
 		},
+		address() {
+			return this.$store.getters.address;
+		},
 		selectedDateTime() {
 			if (this.selectedTime) {
 				let date = new Date();
@@ -223,17 +228,34 @@ export default {
 				return null;
 			}
 		},
-		hasUserAlreadyMadeBookingForSelectedDay() {
+		hasFlatAlreadyMadeBooking() {
 			if (!this.selectedDay) return false;
 			let $this = this;
-			let hasUserAlreadyMadeBookingForSelectedDay = false;
-			this.bookings.forEach(booking => {
-				if ($this.selectedDay.getDay() == booking.day && $this.user.uid == booking.uid) {
-					hasUserAlreadyMadeBookingForSelectedDay = true;
-				}
-			});
-			return hasUserAlreadyMadeBookingForSelectedDay;
-		}
+			let hasFlatAlreadyMadeBooking = false;
+			if (this.selectedDay.getDay() == 0 || this.selectedDay.getDay() == 6) {
+				// check if flat has any bookings on saturday or sunday
+				$this.bookings.forEach((booking) => {
+					if ($this.address.id == booking.addressid && (booking.day == 6 || booking.day == 0)) {
+						hasFlatAlreadyMadeBooking = true;
+					}
+				});
+			} else {
+				// check if flat has any bookings on a weekday
+				$this.bookings.forEach((booking) => {
+					if ($this.address.id == booking.addressid && booking.day < 6 && booking.day > 0) {
+						hasFlatAlreadyMadeBooking = true;
+					}
+				});
+			}
+			return hasFlatAlreadyMadeBooking;
+		},
+		flatHasAlreadyMadeABookingMessage() {
+			if (this.selectedDay.getDay() == 0 || this.selectedDay.getDay() == 6) {
+				return "Your flat has already made a booking in the Saturday to Sunday slot, please try a different one.";
+			} else {
+				return "Your flat has already made a booking in the Monday to Friday slot, please try a different one.";
+			}
+		},
 	},
 	mounted() {
 		let $this = this;
@@ -245,11 +267,10 @@ export default {
 					function(booking) {
 						$this.bookings.push({
 							id: booking.id,
-							...booking.data()
+							...booking.data(),
 						});
 					},
 					function(error) {
-						console.log("Error getting documents: ", error);
 						$this.$store.commit("updateNotificationColour", "is-danger");
 						$this.$store.commit("updateNotificationMessage", "Error getting documents: ", error);
 						$this.$store.commit("updateNotification", true);
@@ -263,7 +284,7 @@ export default {
 		for (let i = 1; i < 7; i++) {
 			this.weekdays.push(this.addDays(this.monday, i));
 		}
-	}
+	},
 };
 </script>
 <style lang="css">
