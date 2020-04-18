@@ -65,9 +65,9 @@ router.beforeEach(async (to, from, next) => {
 			});
 		}
 		// check if user has a registered flat
-		if (!store.state.hasRegisteredAddress) {
-			store.dispatch("checkIfUserHasAddresssAsync").then(() => {
-				if (!store.state.hasRegisteredAddress) {
+		if (!store.state.address) {
+			store.dispatch("getUsersAddressAsync").then(() => {
+				if (!store.state.address) {
 					next("/my-account");
 				} else {
 					next();

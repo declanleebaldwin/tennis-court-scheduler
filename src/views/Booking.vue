@@ -3,7 +3,8 @@
 		<h2 class="title">Make a Booking</h2>
 		<div class="margin-bottom-50">
 			<p class="has-text-grey margin-bottom-10">
-				Bookings are released every Monday. Residents can book one hour slot per day.
+				Bookings are released every Monday.<br/> 
+				Each flat can book a one hour time slot in the week (Mon - Fri), and another one hour time slot at the weekend (Sat - Sun).
 			</p>
 			<p class="has-text-info margin-bottom-10">Select a day</p>
 			<div class="columns is-gapless">

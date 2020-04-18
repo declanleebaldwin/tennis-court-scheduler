@@ -3,7 +3,7 @@
 		<div class="modal-background"></div>
 		<div class="modal-card">
 			<header class="modal-card-head">
-				<p v-if="hasRegisteredAddress" class="modal-card-title">Edit Address</p>
+				<p v-if="address" class="modal-card-title">Edit Address</p>
 				<p v-else class="modal-card-title">Register Address</p>
 				<button class="delete" aria-label="close" @click="$emit('hideModal')"></button>
 			</header>
@@ -41,7 +41,7 @@
 			</section>
 			<footer class="modal-card-foot">
 				<button
-					v-if="hasRegisteredAddress"
+					v-if="address"
 					class="button is-success"
 					@click="updateAddress"
 					:class="{ 'is-loading': loading }"
@@ -62,7 +62,7 @@ import firebase from "firebase";
 import { mapState } from "vuex";
 export default {
 	name: "AddressModal",
-	props: ["isModalDisplayed", "address"],
+	props: ["isModalDisplayed"],
 	data() {
 		return {
 			errors: {
@@ -128,7 +128,7 @@ export default {
 					querySnapshot.forEach(function(doc) {
 						let newAddressRef = db.collection("addresses").doc(doc.id);
 						newAddressRef
-							.update({
+							.update({	
 								users: firebase.firestore.FieldValue.arrayUnion($this.user.uid)
 							})
 							.then(() => {
@@ -136,9 +136,8 @@ export default {
 								$this.loading = false;
 								$this.$store.commit("updateNotificationColour", "is-info");
 								$this.$store.commit("updateNotificationMessage", "Your address has been updated.");
-                                $this.$store.commit("updateNotification", true);
-                                $this.$store.commit("updateHasRegisteredAddress", true);
-                                $this.$emit('getUsersAddress');
+								$this.$store.commit("updateNotification", true);
+								$this.$store.dispatch('getUsersAddressAsync');
 							});
 					});
 				})
@@ -152,7 +151,7 @@ export default {
 				});
 		}
 	},
-	computed: mapState(["user", "hasRegisteredAddress"]),
+	computed: mapState(["user", "address"]),
 	watch: {
 		selectedBuildingName(newBuildingName) {
 			let $this = this;

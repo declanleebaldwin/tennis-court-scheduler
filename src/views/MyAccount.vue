@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
 		<h2 class="title">{{ user.displayName }}</h2>
-		<div class="address-container" v-if="hasRegisteredAddress && address">
+		<div class="address-container" v-if="address">
 			<p class="has-text-grey is-size-5 is-capitalized">
 				Flat {{ address.flat }}, {{ address.building }} Mansions
 			</p>
@@ -11,11 +11,10 @@
 			<p class="has-text-grey margin-bottom-10">Before you can book a court you need to register your address.</p>
 			<button class="button is-info" @click="showModal = true">Register Address</button>
 		</div>
-		<AddressModal @getUsersAddress="getAddress" :address="address" :isModalDisplayed="showModal" @hideModal="showModal = false" />
+		<AddressModal :isModalDisplayed="showModal" @hideModal="showModal = false" />
 	</div>
 </template>
 <script>
-import db from "@/fb";
 import { mapState } from "vuex";
 import AddressModal from "@/components/AddressModal.vue";
 
@@ -26,34 +25,10 @@ export default {
 	},
 	data() {
 		return {
-			address: null,
 			showModal: false
 		};
 	},
-	methods: {
-		getAddress() {
-			let $this = this;
-			db.collection("addresses")
-				.where("users", "array-contains", $this.user.uid)
-				.onSnapshot(
-					function(querySnapshot) {
-						querySnapshot.forEach(function(address) {
-							$this.address = {
-								id: address.id,
-								...address.data()
-							};
-						});
-					},
-					function(error) {
-						console.log("Error getting documents: ", error);
-					}
-				);
-		}
-	},
-	computed: mapState(["user", "hasRegisteredAddress"]),
-	mounted() {
-		this.getAddress();
-	}
+	computed: mapState(["user", "address"]),
 };
 </script>
 <style lang="css">

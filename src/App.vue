@@ -18,18 +18,15 @@
 						</div>
 						<div v-if="user" id="navbarMenuHeroC" class="navbar-menu" :class="{ 'is-active': showNavBar }">
 							<div class="navbar-end">
-								<!-- <router-link v-show="hasRegisteredAddress" id="navbar-make-a-booking" class="navbar-item" to="/admin"
-									>Admin</router-link
-								> -->
 								<router-link
-									v-show="hasRegisteredAddress"
+									v-show="address"
 									id="navbar-make-a-booking"
 									class="navbar-item"
 									to="/booking"
 									>Make a Booking</router-link
 								>
 								<router-link
-									v-show="hasRegisteredAddress"
+									v-show="address"
 									id="navbar-my-bookings"
 									class="navbar-item"
 									to="/my-bookings"
@@ -93,7 +90,7 @@ export default {
 			this.$store.commit("updateShowNavbar", !this.showNavBar);
 		}
 	},
-	computed: mapState(["user", "hasRegisteredAddress", "showNavBar"])
+	computed: mapState(["user", "address", "showNavBar"])
 };
 </script>
 <style lang="css">
