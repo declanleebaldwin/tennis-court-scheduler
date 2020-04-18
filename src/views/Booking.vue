@@ -175,7 +175,6 @@ export default {
 					$this.loading = false;
 				})
 				.catch(function(error) {
-					console.error("Error adding document: ", error);
 					$this.loading = false;
 					$this.$store.commit("updateNotificationColour", "is-danger");
 					$this.$store.commit("updateNotificationMessage", "Error adding document: ", error);

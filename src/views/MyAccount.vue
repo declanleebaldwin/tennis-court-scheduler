@@ -28,7 +28,36 @@ export default {
 			showModal: false
 		};
 	},
+<<<<<<< HEAD
 	computed: mapState(["user", "address"]),
+=======
+	methods: {
+		getAddress() {
+			let $this = this;
+			db.collection("addresses")
+				.where("users", "array-contains", $this.user.uid)
+				.onSnapshot(
+					function(querySnapshot) {
+						querySnapshot.forEach(function(address) {
+							$this.address = {
+								id: address.id,
+								...address.data()
+							};
+						});
+					},
+					function(error) {
+						$this.$store.commit("updateNotificationColour", "is-danger");
+						$this.$store.commit("updateNotificationMessage", "Error getting address: ", error);
+						$this.$store.commit("updateNotification", true);
+					}
+				);
+		}
+	},
+	computed: mapState(["user", "hasRegisteredAddress"]),
+	mounted() {
+		this.getAddress();
+	}
+>>>>>>> 94ace9e5adced29b5b5a1cb94937e64ec60a0cd8
 };
 </script>
 <style lang="css">
