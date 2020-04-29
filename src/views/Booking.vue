@@ -28,7 +28,7 @@
 			</div>
 		</div>
 		<div class="margin-bottom-50">
-			<p class="has-text-info margin-bottom-10">Select a time</p>
+			<p ref="select-time" class="has-text-info margin-bottom-10">Select a time</p>
 			<div class="columns is-gapless">
 				<div class="column" v-for="(time, index) in times" :key="index">
 					<span class="has-text-grey-light">{{ time }}</span>
@@ -38,7 +38,7 @@
 					<div
 						v-else
 						class="calenderBoxTime is-centered has-text-grey"
-						@click="selectedTime = time"
+						@click="selectTime(time)"
 						:class="{ selected: isSelectedTime(time) }"
 					>
 						<span v-show="isSelectedTime(time)">Selected</span>
@@ -100,6 +100,10 @@ export default {
 		};
 	},
 	methods: {
+		scrollMeTo(refName) {
+			var element = this.$refs[refName];
+			element.scrollIntoView({ behavior: "smooth" });
+		},
 		getMonday() {
 			let date = new Date();
 			var day = new Date().getDay() || 7;
@@ -122,8 +126,17 @@ export default {
 		},
 		selectDay(weekday) {
 			if (this.isDayInPast(weekday)) return;
+			this.scrollMeTo("select-time");
 			this.selectedTime = null;
 			this.selectedDay = weekday;
+		},
+		selectTime(time) {
+			this.selectedTime = time;
+			window.scrollTo({
+				top: document.body.scrollHeight,
+				left: 0,
+				behavior: "smooth",
+			});
 		},
 		isSelectedDay(weekday) {
 			if (
@@ -183,7 +196,7 @@ export default {
 		},
 		isDayInPast(weekday) {
 			let today = new Date();
-			if (today.getDate() > weekday.getDate()) {
+			if (today.getDate() > weekday.getDate() && today.getMonth() == weekday.getMonth()) {
 				return true;
 			} else {
 				return false;
@@ -219,9 +232,12 @@ export default {
 		},
 		selectedDateTime() {
 			if (this.selectedTime) {
-				let date = new Date();
-				date.setUTCHours(this.selectedTime - 1);
-				date.setUTCDate(this.selectedDay.getDate());
+				let date = new Date(
+					this.selectedDay.getFullYear(),
+					this.selectedDay.getMonth(),
+					this.selectedDay.getDate(),
+					this.selectedTime
+				);
 				return date;
 			} else {
 				return null;

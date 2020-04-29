@@ -96,6 +96,9 @@ export default {
 };
 </script>
 <style lang="css">
+.section {
+  padding: 2rem 1.5rem;
+}
 .hero {
 	margin-bottom: 50px;
 }
