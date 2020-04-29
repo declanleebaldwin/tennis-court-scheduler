@@ -137,7 +137,7 @@ export default {
 								$this.$store.commit("updateNotificationColour", "is-info");
 								$this.$store.commit("updateNotificationMessage", "Your address has been updated.");
 								$this.$store.commit("updateNotification", true);
-								$this.$store.dispatch('getUsersAddressAsync');
+								$this.$router.push('booking');
 							});
 					});
 				})

@@ -186,6 +186,7 @@ export default {
 					$this.selectedTime = null;
 					$this.selectedDay = new Date();
 					$this.loading = false;
+					$this.$router.push('my-bookings');
 				})
 				.catch(function(error) {
 					$this.loading = false;
