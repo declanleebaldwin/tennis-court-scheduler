@@ -1,11 +1,14 @@
 <template>
 	<div class="container">
 		<h2 class="title">{{ user.displayName }}</h2>
-		<div class="address-container" v-if="address">
-			<p class="has-text-grey is-size-5 is-capitalized">
-				Flat {{ address.flat }}, {{ address.building }} Mansions
-			</p>
-			<i class="material-icons edit-icon" title="Edit" @click="showModal = true">edit</i>
+		<div v-if="address">
+			<div class="address-container margin-bottom-10" >
+				<p class="has-text-grey is-size-5 is-capitalized">
+					Flat {{ address.flat }}, {{ address.building }} Mansions
+				</p>
+				<i class="material-icons edit-icon" title="Edit" @click="showModal = true">edit</i>
+			</div>
+			<button class="button is-primary" @click="$router.push('booking')">Make a Booking</button>
 		</div>
 		<div v-else>
 			<p class="has-text-grey margin-bottom-10">Before you can book a court you need to register your address.</p>
