@@ -8,7 +8,7 @@
 				</p>
 				<i class="material-icons edit-icon" title="Edit" @click="showModal = true">edit</i>
 			</div>
-			<button class="button is-primary" @click="$router.push('booking')">Make a Booking</button>
+			<button class="button is-success" @click="$router.push('booking')">Make a Booking</button>
 		</div>
 		<div v-else>
 			<p class="has-text-grey margin-bottom-10">Before you can book a court you need to register your address.</p>
