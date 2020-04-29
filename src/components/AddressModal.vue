@@ -100,6 +100,8 @@ export default {
 			if (!this.errors.building && !this.errors.flat) {
 				this.addNewAddress();
 			}
+			this.$router.push('booking');
+
 		},
 		updateAddress() {
 			this.validateBuilding();
@@ -137,7 +139,6 @@ export default {
 								$this.$store.commit("updateNotificationColour", "is-info");
 								$this.$store.commit("updateNotificationMessage", "Your address has been updated.");
 								$this.$store.commit("updateNotification", true);
-								$this.$router.push('booking');
 							});
 					});
 				})
