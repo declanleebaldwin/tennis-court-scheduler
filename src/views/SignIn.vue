@@ -27,7 +27,7 @@ export default {
 				.signInWithPopup(provider)
 				.then(function(result) {
 					$this.loading = false;
-					// $this.token = result.credential.accessToken;
+					console.log(result.credential.accessToken);
 					$this.$store.commit("setUserData", {
 						uid: result.user.uid,
 						displayName: result.user.displayName,

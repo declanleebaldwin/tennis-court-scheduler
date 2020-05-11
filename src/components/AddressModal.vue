@@ -51,7 +51,7 @@
 				<button v-else class="button is-success" @click="registerAddress" :class="{ 'is-loading': loading }">
 					Register
 				</button>
-				<button class="button" @click="showModal = false">Cancel</button>
+				<button class="button" @click="hideModal">Cancel</button>
 			</footer>
 		</div>
 	</div>
@@ -77,6 +77,9 @@ export default {
 		};
 	},
 	methods: {
+		hideModal() {
+			this.$emit("hideAddressModal");
+		},
 		toUpper(string) {
 			return string.charAt(0).toUpperCase() + string.substring(1);
 		},
@@ -132,7 +135,7 @@ export default {
 								users: firebase.firestore.FieldValue.arrayUnion($this.user.uid)
 							})
 							.then(() => {
-								$this.$emit("hideModal");
+								$this.$emit("hideAddressModal");
 								$this.loading = false;
 								$this.$store.commit("updateNotificationColour", "is-info");
 								$this.$store.commit("updateNotificationMessage", "Your address has been updated.");
@@ -142,7 +145,7 @@ export default {
 					});
 				})
 				.catch(function(error) {
-					$this.$emit("hideModal");
+					$this.$emit("hideAddressModal");
 					$this.loading = false;
 					$this.$store.commit("updateNotificationColour", "is-danger");
 					$this.$store.commit("updateNotificationMessage", "Error getting documents: ", error);

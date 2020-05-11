@@ -1,5 +1,6 @@
 import * as firebase from 'firebase';
 import "firebase/auth";
+
 var firebaseConfig = {
     apiKey: "AIzaSyBqSavDHySRTydr9uGwhhExWrNploNo4lk",
     authDomain: "tennis-court-scheduler.firebaseapp.com",

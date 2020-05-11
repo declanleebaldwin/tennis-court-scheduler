@@ -131,6 +131,9 @@ export default {
 .margin-bottom-5 {
 	margin-bottom: 5px;
 }
+.margin-right-25 {
+	margin-right: 25px;
+}
 
 @media only screen and (max-width: 1025px) {
 	.account {
