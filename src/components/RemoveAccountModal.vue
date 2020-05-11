@@ -44,8 +44,8 @@ export default {
 		async removeAccount() {
 			this.loading = true;
 			try {
-				// await this.removeAddress();
-				// await this.removeBookings();
+				await this.removeAddress();
+				await this.removeBookings();
 				let config = {
 					headers: { authorization: "Bearer " + this.token },
 				};
@@ -58,7 +58,6 @@ export default {
 				this.hideModal();
 				this.signOut()
 			} catch (error) {
-				console.log(error);
 				this.loading = false;
 				this.$store.commit("updateNotificationColour", "is-danger");
 				this.$store.commit("updateNotificationMessage", "Error removing account: ", error);
@@ -77,7 +76,6 @@ export default {
 						resolve();
 					})
 					.catch(() => {
-						console.log("remove address error");
 						reject();
 					});
 			});
@@ -90,11 +88,11 @@ export default {
 					.get()
 					.then(function(querySnapshot) {
 						querySnapshot.forEach(function(doc) {
-							doc.ref.delete().then(() => resolve());
+							doc.ref.delete();
 						});
+						resolve();
 					})
 					.catch(() => {
-						console.log("remove bookings error");
 						reject();
 					});
 			});
@@ -120,7 +118,9 @@ export default {
 				$this.token = idToken;
 			})
 			.catch(function(error) {
-				console.log(error);
+				$this.$store.commit("updateNotificationColour", "is-danger");
+				$this.$store.commit("updateNotificationMessage", "Error retrieving token: ", error);
+				$this.$store.commit("updateNotification", true);
 			});
 	},
 };
