@@ -45,6 +45,7 @@ export default {
 			this.loading = true;
 			try {
 				await this.removeAddress();
+				this.$store.dispatch('getUsersAddressAsync');
 				await this.removeBookings();
 				let config = {
 					headers: { authorization: "Bearer " + this.token },
